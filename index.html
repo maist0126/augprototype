@@ -7,16 +7,16 @@
     <title>On</title>
     <link href="./on.css" rel="stylesheet" />
 </head>
-<body id = "background">	
+<body id = "background">
+    <div class="mic">
+            <input type = "button" id = "help" value = "더 말하고 싶어요" onclick="add(1)" />
+    </div>	
     <div id = "mic_on" class="mic">
         <img src="./img/mic_on.png" width="100%" height="100%">
     </div>
     <div id = "mic_off" class="mic">
             <img src="./img/mic_off.png" width="100%" height="100%">
         </div>
-    <div class="mic">
-            <input type = "button" id = "help" value = "더 말하고 싶어요" onclick="add(1)" />
-    </div>
     <script src="./on.js"></script>
     <script src="./jquery-3.4.1.min.js"></script>
 </body>
