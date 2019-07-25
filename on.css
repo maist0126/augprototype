@@ -11,6 +11,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 20px;
 }
 
 #mic_on{
@@ -24,6 +25,7 @@
     border: 5px solid white;
     border-radius: 100px;
     font-weight: 500; 
+    margin-top: 20px;
     padding-top: 20px;
     padding-bottom: 20px;
     padding-left: 30px;
@@ -32,12 +34,10 @@
     text-align: center;
 }
 
-#help_done{
-    display: none;
-    color: #333333; 
-    background-color: #ffffff;
-    border: 5px solid white;
-    border-radius: 100px;
+#label{
+    width: 100%;
+    color: #ffffff; 
+    background-color: #333333;
     font-weight: 500; 
     padding-top: 20px;
     padding-bottom: 20px;

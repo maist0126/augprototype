@@ -1,0 +1,30 @@
+#save{
+    color: #ffffff; 
+    background-color: rgb(78, 78, 78); 
+    font-weight: 500; 
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 20px;
+    text-align: center;
+    
+}
+#name{
+    width: 300px;
+    font-size: 30px;
+}
+
+.first{
+    float: left;
+    width: 100%;
+}
+
+.alert{
+    margin-top: 20px; 
+    margin-bottom: 40px;
+    padding-top: 20px; 
+    padding-bottom: 20px;
+    font-weight: 500; 
+    background-color: #e6e6e6; 
+    font-size: 60px;
+    text-align: center;
+}

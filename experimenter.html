@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Experimenter</title>
+	<audio id='audio_play' src='./src/sound.mp3'></audio>
+	<link href="./experimenter.css" rel="stylesheet" />
+</head>
+<body>
+		<script src="https://www.gstatic.com/firebasejs/5.11.0/firebase.js"></script>
+		<script src="./NoSleep.js"></script>
+    <div class = "first">
+        <div class = "title_on">
+            현재 발언자
+        </div>
+		<div class = "title_off">
+			다음 발언자
+        </div>
+		<div class = "title_off">
+			그 다음 발언자
+		</div>
+		<div class = "title_off">
+			more
+		</div>
+    </div>
+	<div class = "first">
+		<div class = "order_on" id="current">
+			없음
+		</div>
+		<div class = "order_off" id="next">
+			
+		</div>
+		<div class = "order_off" id="more">
+			
+		</div>
+		<div class = "order_off" id="number">
+			
+		</div>
+	</div>
+	<div class = "first">
+		<input type = "button" id = "speech_start" value = "발언 시작" class = "two speech" />
+        <div class = "padding">
+            <p></p>
+        </div>
+		<input type = "button" id = "speech_stop" value = "발언 종료" class = "two speech" />
+    </div>		
+    <script src="./experimenter.js"></script>				
+</body>
+</html>

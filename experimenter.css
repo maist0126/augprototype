@@ -1,0 +1,155 @@
+.first{
+    float: left;
+    width: 100%;
+}
+
+.two{
+    float: left;
+    width: 49.5%;
+}
+
+.three{
+    float: left;
+    width: 32.6%;
+}
+
+.title_on{
+    float: left; 
+    width: 25%; 
+    color: #000000; 
+    font-weight: 700; 
+    text-align: center; 
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+    padding-top: 10px;
+    padding-bottom: 10px; 
+    font-size:30px; 
+    text-decoration: underline;
+}
+
+.title_off{
+    float: left; 
+    width: 25%; 
+    color: #adadad; 
+    font-weight: 200; 
+    text-align: center; 
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+    padding-top: 10px;
+    padding-bottom: 10px; 
+    font-size:30px; 
+    text-decoration: underline;
+}
+
+.order_on{
+    float: left; 
+    width: 25%; 
+    color: #000000; 
+    font-weight: 700; 
+    text-align: center; 
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+    padding-top: 10px;
+    padding-bottom: 10px; 
+    font-size:50px;
+}
+
+.order_off{
+    float: left; 
+    width: 25%; 
+    color: #adadad; 
+    font-weight: 200; 
+    text-align: center; 
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+    padding-top: 10px;
+    padding-bottom: 10px; 
+    font-size:50px;
+}
+
+#timer{
+    margin-top: 20px; 
+    margin-bottom: 40px;
+    padding-top: 20px; 
+    padding-bottom: 20px;
+    font-weight: 500; 
+    background-color: #e6e6e6; 
+    font-size: 60px;
+    text-align: center;
+}
+
+.alert{
+    margin-top: 20px; 
+    margin-bottom: 40px;
+    padding-top: 20px; 
+    padding-bottom: 20px;
+    font-weight: 500; 
+    background-color: #e6e6e6; 
+    font-size: 60px;
+    text-align: center;
+}
+
+.speech{
+    color: #ffffff; 
+    background-color: black; 
+    font-weight: 500; 
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 20px;
+    text-align: center;
+    
+}
+
+#add{
+    color: #ffffff; 
+    background-color: rgb(0, 140, 255); 
+    font-weight: 500; 
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 20px;
+    text-align: center;
+    
+}
+
+#subtract{
+    color: #ffffff; 
+    background-color: rgb(255, 62, 152); 
+    font-weight: 500; 
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 20px;
+    text-align: center;
+    
+}
+
+#want{
+    color: #ffffff; 
+    background-color: rgb(0, 184, 0); 
+    font-weight: 500; 
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 20px;
+    text-align: center;
+    
+}
+
+#save{
+    color: #ffffff; 
+    background-color: rgb(78, 78, 78); 
+    font-weight: 500; 
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 20px;
+    text-align: center;
+    
+}
+
+.padding{
+    float: left;
+    width: 1%;
+}
+
+#nickname{
+    width: 300px;
+    font-size: 30px;
+}
