@@ -10,7 +10,18 @@
     font-size: 120px;
     text-align: center;
 }
-
+#want2{
+    color: #ffffff; 
+    background-color: rgb(0, 184, 0); 
+    font-weight: 500; 
+    padding-top: 120px;
+    padding-bottom: 120px;
+    padding-left: 40px;
+    padding-right: 40px;
+    font-size: 120px;
+    text-align: center;
+    
+}
 .name{
     margin-top: 300px;
 }
