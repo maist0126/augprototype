@@ -11,14 +11,7 @@
     text-align: center;
 }
 #marginforinterface{
-    color: #ffffff; 
-    background-color: #ffffff; 
-    font-weight: 500; 
-    padding-top: 180px;
-    padding-bottom: 180px;
-    padding-left: 40px;
-    padding-right: 40px;
-    font-size: 120px;
+    height: 360px;
     text-align: center;
     
 }
@@ -55,18 +48,20 @@
     font-weight: 500; 
     padding-top: 120px;
     padding-bottom: 120px;
-    font-size: 40px;
+    font-size: 50px;
     text-align: center;
     
 }
 
 #subtract{
+    word-break:break-all;
+    word-wrap:break-word;
     color: #ffffff; 
     background-color: rgb(255, 62, 152); 
     font-weight: 500; 
     padding-top: 120px;
     padding-bottom: 120px;
-    font-size: 40px;
+    font-size: 50px;
     text-align: center;
     
 }
