@@ -23,3 +23,14 @@ function create() {
         firebase.database().ref().child('user_count').set(user_count);
     });
 }
+
+function reset() {
+    firebase.database().ref().set(null);
+    firebase.database().ref().child('user_count').set(1);
+    firebase.database().ref().child('start_status').set({
+        status: 0
+    });
+    firebase.database().ref().child('now_status').set({
+        status: 0
+    });
+}

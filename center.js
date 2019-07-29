@@ -133,6 +133,9 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
         RemainDate = timer_time;
         ArchiveTime = 0;
         arc=setInterval('arc_time()',100);
+        var current = document.getElementById('current');
+        current.style.color = '#ff0000';
+        el.style.color = '#ffffff';
         if (next_user_true == 1){
             if (msg_state == 0){
                 tid=setInterval('msg_time()', 100);
@@ -143,6 +146,8 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
         start_status = 0;
         clearInterval(tid);
         clearInterval(arc);
+        var current = document.getElementById('current');
+        current.style.color = '#000000';
         document.all.timer.innerHTML = "";
         msg_state = 0;
         ArchiveTime = datatable[now_id][1] + ArchiveTime/1000;
