@@ -46,6 +46,17 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
     }
 });
 
+firebase.database().ref().child('subtract').on('value', function(snapshot) {
+    if (start_status == 1){
+        let subtract = 0;
+        for (let key in snapshot.val()) {
+            subtract = subtract + 1;
+        }
+        changecolor('#ff3e98');
+        firebase.database().ref().child('subtract').set(null);
+    }
+});
+
 mic_on.addEventListener('click',function(e){
     firebase.database().ref().child('now_status').set({
         status : 0
@@ -72,6 +83,31 @@ help.addEventListener('click',function(e){
     help.style.fontWeight = '700';
     help.setAttribute("value", "요청되었습니다");
 });
+
+function changecolor(color){
+    clearTimeout(myTimer);
+    var el = document.getElementById(`user${now_user}`);
+    el.style.backgroundColor = `${color}`;
+    el.style.color = '#ffffff';
+    vibrate();
+    myTimer = setTimeout(function() {
+        el.style.backgroundColor = '#e6e6e6';
+        el.style.color = '#000000';
+        vibrate_stop();
+        }, 1000);
+}
+
+function vibrate() {
+    if (navigator.vibrate) {
+        navigator.vibrate(20000); // 진동을 울리게 한다. 1000ms = 1초
+    }
+    else {
+    }
+}
+
+function vibrate_stop() {
+    navigator.vibrate(0);
+}
 
 function getQueryStringObject() {
     var a = window.location.search.substr(1).split('&');
