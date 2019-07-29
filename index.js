@@ -10,15 +10,16 @@ const firebaseConfig = {
 let user_count = 1;
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
 firebase.database().ref().child('user_count').once('value').then(function(snapshot) {
     user_count = snapshot.val();
-    console.log(user_count);
 });
 
 function create() {
-    let user_nickname = document.getElementById("name").value;
-    location.href = `./user.html?id=${user_count}&name=${user_nickname}`;
-    user_count = user_count + 1;
-    firebase.database().ref().child('user_count').set(user_count);
+    firebase.database().ref().child('user_count').once('value').then(function(snapshot) {
+        user_count = snapshot.val();
+        let user_nickname = document.getElementById("name").value;
+        location.href = `./user.html?id=${user_count}&name=${user_nickname}`;
+        user_count = user_count + 1;
+        firebase.database().ref().child('user_count').set(user_count);
+    });
 }

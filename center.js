@@ -1,15 +1,13 @@
-const speech_start = document.getElementById('speech_start');
-const speech_stop = document.getElementById('speech_stop');
-
 const firebaseConfig = {
-    apiKey: "AIzaSyDqrxVLbCj9D1NyPziKNyrmzhegXNpCI6A",
-    authDomain: "summer-iw.firebaseapp.com",
-    databaseURL: "https://summer-iw.firebaseio.com",
-    projectId: "summer-iw",
+    apiKey: "AIzaSyDgKn2qdiotLT3IhUoWe1h2mMGKXpQMm_4",
+    authDomain: "aug-iw.firebaseapp.com",
+    databaseURL: "https://aug-iw.firebaseio.com",
+    projectId: "aug-iw",
     storageBucket: "",
-    messagingSenderId: "939837361800",
-    appId: "1:939837361800:web:b2f180e51fcf2dce"
+    messagingSenderId: "929095306586",
+    appId: "1:929095306586:web:ec7a4216a7ec63a9"
 };
+
 const noSleep = new NoSleep();
 
 let alarm_status = 1;
@@ -17,11 +15,12 @@ let start_status = 0;
 let next_user_true = 0;
 let msg_state = 0;
 let tid;
-let RemainDate = 60000;
+const timer_time = 60000;
+let RemainDate = undefined;
 let arc;
 let ArchiveTime = 0;
-let now_user = undefined;
-let now_user_nickname = undefined;
+let now_id = undefined;
+let now_name = undefined;
 
 let myTimer;
 
@@ -50,23 +49,27 @@ firebase.database().ref().child('data').once('value').then(function(snapshot) {
     datatable[6][1] = snapshot.val()[0].user6; 
     google.charts.setOnLoadCallback(drawChart);
 });
-firebase.database().ref().child('now').once('value').then(function(snapshot) {
-    now_user = snapshot.val().username;  
-    now_user_nickname = snapshot.val().nickname;   
-    if (now_user_nickname != undefined){
-        document.getElementById("current").innerHTML="" + now_user_nickname;
-    } else{
+firebase.database().ref().child('now_status').once('value').then(function(snapshot) {
+    if (snapshot.val().status == 0){
         document.getElementById("current").innerHTML="없음";
-    } 
+    } else {
+        firebase.database().ref().child('now').once('value').then(function(snapshot2) {
+            now_id = snapshot2.val().id; 
+            now_name = snapshot2.val().name; 
+            document.getElementById("current").innerHTML="" + now_name;
+        });
+    }
 });
-firebase.database().ref().child('now').on('value', function(snapshot) {
-    now_user = snapshot.val().username;  
-    now_user_nickname = snapshot.val().nickname; 
-    if (now_user_nickname != undefined){
-        document.getElementById("current").innerHTML="" + now_user_nickname;
-    } else{
+firebase.database().ref().child('now_status').on('value', function(snapshot) {
+    if (snapshot.val().status == 0){
         document.getElementById("current").innerHTML="없음";
-    }   
+    } else {
+        firebase.database().ref().child('now').once('value').then(function(snapshot2) {
+            now_id = snapshot2.val().id; 
+            now_name = snapshot2.val().name; 
+            document.getElementById("current").innerHTML="" + now_name;
+        });
+    }  
 });
 
 firebase.database().ref().child('nickname').once('value').then(function(snapshot) {
@@ -125,10 +128,9 @@ firebase.database().ref().child('add').on('value', function(snapshot) {
 
 
 firebase.database().ref().child('start_status').on('value', function(snapshot) {
-    if (snapshot.val().start_status == 1){
-        document.all.timer.innerHTML = "";
+    if (snapshot.val().status == 1){
         start_status = 1;
-        RemainDate = 60000;
+        RemainDate = timer_time;
         ArchiveTime = 0;
         arc=setInterval('arc_time()',100);
         if (next_user_true == 1){
@@ -137,12 +139,14 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
                 msg_state = 1;
             }
         }
-    } else if (snapshot.val().start_status == 0) {
+    } else if (snapshot.val().status == 0) {
+        start_status = 0;
         clearInterval(tid);
         clearInterval(arc);
+        document.all.timer.innerHTML = "";
         msg_state = 0;
-        ArchiveTime = datatable[now_user][1] + ArchiveTime/1000;
-        datatable[now_user][1] = ArchiveTime;
+        ArchiveTime = datatable[now_id][1] + ArchiveTime/1000;
+        datatable[now_id][1] = ArchiveTime;
         drawChart();
         firebase.database().ref('/data/0').set({
             user1: datatable[1][1],
@@ -152,10 +156,9 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
             user5: datatable[5][1],
             user6: datatable[6][1],
         });
-        firebase.database().ref('/data/'+now_user).set({
+        firebase.database().ref('/data/'+now_id).set({
             time: ArchiveTime,
         });
-        start_status = 0;
         let worst = [
             {name: 1, value: datatable[1][1]},
             {name: 2, value: datatable[2][1]},
@@ -171,24 +174,19 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
             }
         });
         firebase.database().ref('worst').set({
-            username: worst[0].name,
+            id: worst[0].name,
             time: worst[0].value,
         });
     }
 });
 
 function innerUsername(snapshot){
-    let order = [];
+    let name_order = [];
 	for (let key in snapshot.val()) {
-        order.push(snapshot.val()[key].nickname);
+        name_order.push(snapshot.val()[key].name);
     }
-    let number = order.length - 2;
-    if (now_user_nickname != undefined){
-        document.getElementById("current").innerHTML="" + now_user_nickname;
-    } else{
-        document.getElementById("current").innerHTML="없음";
-    }
-    if (order[0] != undefined){
+    let number = name_order.length - 2;
+    if (name_order[0] != undefined){
         next_user_true = 1;
         if (start_status == 1){
             if (msg_state == 0){
@@ -196,13 +194,13 @@ function innerUsername(snapshot){
                 msg_state = 1;
             }
         }
-        document.getElementById("next").innerHTML="" + order[0];
+        document.getElementById("next").innerHTML="" + name_order[0];
     } else{
         next_user_true = 0;
         document.getElementById("next").innerHTML="없음";
     }
-    if (order[1] != undefined){
-        document.getElementById("more").innerHTML="" + order[1];
+    if (name_order[1] != undefined){
+        document.getElementById("more").innerHTML="" + name_order[1];
     } else{
         document.getElementById("more").innerHTML="없음";
     }

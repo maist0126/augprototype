@@ -2,13 +2,13 @@ const speech_start = document.getElementById('speech_start');
 const speech_stop = document.getElementById('speech_stop');
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDqrxVLbCj9D1NyPziKNyrmzhegXNpCI6A",
-    authDomain: "summer-iw.firebaseapp.com",
-    databaseURL: "https://summer-iw.firebaseio.com",
-    projectId: "summer-iw",
+    apiKey: "AIzaSyDgKn2qdiotLT3IhUoWe1h2mMGKXpQMm_4",
+    authDomain: "aug-iw.firebaseapp.com",
+    databaseURL: "https://aug-iw.firebaseio.com",
+    projectId: "aug-iw",
     storageBucket: "",
-    messagingSenderId: "939837361800",
-    appId: "1:939837361800:web:b2f180e51fcf2dce"
+    messagingSenderId: "929095306586",
+    appId: "1:929095306586:web:ec7a4216a7ec63a9"
 };
 const noSleep = new NoSleep();
 
@@ -30,7 +30,6 @@ firebase.database().ref().child('order').once('value').then(function(snapshot) {
         start_status: 0,
     });
 });
-
 
 firebase.database().ref().child('order').on('value', function(snapshot) {
     innerUsername(snapshot);
