@@ -49,27 +49,23 @@ firebase.database().ref().child('data').once('value').then(function(snapshot) {
     datatable[6][1] = snapshot.val()[0].user6; 
     google.charts.setOnLoadCallback(drawChart);
 });
-firebase.database().ref().child('now_status').once('value').then(function(snapshot) {
+firebase.database().ref().child('now').once('value').then(function(snapshot) {
     if (snapshot.val().status == 0){
         document.getElementById("current").innerHTML="없음";
     } else {
-        firebase.database().ref().child('now').once('value').then(function(snapshot2) {
-            now_id = snapshot2.val().id; 
-            now_name = snapshot2.val().name; 
-            document.getElementById("current").innerHTML="" + now_name;
-        });
+        now_id = snapshot.val().id; 
+        now_name = snapshot.val().name; 
+        document.getElementById("current").innerHTML="" + now_name; 
     }
 });
-firebase.database().ref().child('now_status').on('value', function(snapshot) {
+firebase.database().ref().child('now').on('value', function(snapshot) {
     if (snapshot.val().status == 0){
         document.getElementById("current").innerHTML="없음";
     } else {
-        firebase.database().ref().child('now').once('value').then(function(snapshot2) {
-            now_id = snapshot2.val().id; 
-            now_name = snapshot2.val().name; 
-            document.getElementById("current").innerHTML="" + now_name;
-        });
-    }  
+        now_id = snapshot.val().id; 
+        now_name = snapshot.val().name; 
+        document.getElementById("current").innerHTML="" + now_name; 
+    } 
 });
 
 firebase.database().ref().child('nickname').once('value').then(function(snapshot) {
@@ -135,7 +131,6 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
         arc=setInterval('arc_time()',100);
         var current = document.getElementById('current');
         current.style.color = '#ff0000';
-        el.style.color = '#ffffff';
         if (next_user_true == 1){
             if (msg_state == 0){
                 tid=setInterval('msg_time()', 100);

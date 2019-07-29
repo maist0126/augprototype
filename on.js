@@ -5,6 +5,8 @@ const label = document.getElementById('label');
 
 let userid = undefined;
 let username = undefined;
+let start_status = 0;
+let myTimer = undefined;
 
 const firebaseConfig = {
     apiKey: "AIzaSyDgKn2qdiotLT3IhUoWe1h2mMGKXpQMm_4",
@@ -22,13 +24,6 @@ let RemainDate = 60000;
 window.onload = function(){
     userid = getQueryStringObject().id;
     username = ""+getQueryStringObject().name;
-    firebase.database().ref('/now').set({
-        id: userid,
-        name: username
-    });
-    firebase.database().ref().child('now_status').set({
-        status : 1
-    });
 };
 
 document.addEventListener('click', function enableNoSleep() {
@@ -37,15 +32,6 @@ document.addEventListener('click', function enableNoSleep() {
   }, false);
 
 firebase.initializeApp(firebaseConfig);
-
-firebase.database().ref().child('start_status').on('value', function(snapshot) {
-    if (snapshot.val().start_status == 1){
-        start_status = 1;
-    } else if (snapshot.val().start_status == 0) {
-        start_status = 0;
-    }
-});
-
 firebase.database().ref().child('subtract').on('value', function(snapshot) {
     if (start_status == 1){
         let subtract = 0;
@@ -58,17 +44,18 @@ firebase.database().ref().child('subtract').on('value', function(snapshot) {
 });
 
 mic_on.addEventListener('click',function(e){
-    firebase.database().ref().child('now_status').set({
-        status : 0
-    });
+    start_status = 0;
     firebase.database().ref('/start_status').set({
         status: 0
     });
-    firebase.database().ref('/now').set(null);
+    firebase.database().ref('/now').set({
+        status : 0
+    });
     location.href = `./user.html?id=${userid}&name=${username}`;
 });
 
 mic_off.addEventListener('click',function(e){
+    start_status = 1;
     firebase.database().ref('/start_status').set({
         status: 1
     });
@@ -86,18 +73,14 @@ help.addEventListener('click',function(e){
 
 function changecolor(color){
     clearTimeout(myTimer);
-    var el = document.getElementById(`user${now_user}`);
-    el.style.backgroundColor = `${color}`;
-    el.style.color = '#ffffff';
     vibrate();
     myTimer = setTimeout(function() {
-        el.style.backgroundColor = '#e6e6e6';
-        el.style.color = '#000000';
         vibrate_stop();
         }, 1000);
 }
 
 function vibrate() {
+    console.log("shut up!");
     if (navigator.vibrate) {
         navigator.vibrate(20000); // 진동을 울리게 한다. 1000ms = 1초
     }
@@ -106,6 +89,7 @@ function vibrate() {
 }
 
 function vibrate_stop() {
+    console.log("shut down!");
     navigator.vibrate(0);
 }
 

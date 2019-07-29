@@ -30,7 +30,7 @@ function reset() {
     firebase.database().ref().child('start_status').set({
         status: 0
     });
-    firebase.database().ref().child('now_status').set({
+    firebase.database().ref().child('now').set({
         status: 0
     });
 }

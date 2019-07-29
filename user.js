@@ -14,6 +14,7 @@ let worst_id = undefined;
 let worst_time = undefined;
 
 let now_id = undefined;
+let now_name = undefined;
 let now_status = 0;
 
 let start_status = 0;
@@ -89,6 +90,11 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
                 firebase.database().ref().child('order').once('value').then(function(snapshot){
                     firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
                 });
+                firebase.database().ref().child('now').set({
+                    status : 1,
+                    id : userid,
+                    name : username
+                });
                 location.href = `./on.html?id=${userid}&name=${username}`;
             }
         }
@@ -105,9 +111,7 @@ firebase.database().ref().child('worst').on('value', function(snapshot) {
     worst_time = snapshot.val().time;
 });
 
-
-
-firebase.database().ref().child('now_status').on('value', function(snapshot) {
+firebase.database().ref().child('now').once('value').then(function(snapshot) {
     if (snapshot.val().status == 0){
         now_status = 0;
         if (empty == 0){
@@ -115,11 +119,41 @@ firebase.database().ref().child('now_status').on('value', function(snapshot) {
                 firebase.database().ref().child('order').once('value').then(function(snapshot){
                     firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
                 });
+                firebase.database().ref().child('now').set({
+                    status : 1,
+                    id : userid,
+                    name : username
+                });
                 location.href = `./on.html?id=${userid}&name=${username}`;
             }
         }
     } else{
         now_status = 1;
+        now_id = snapshot.val().id; 
+        now_name = snapshot.val().name; 
+    }
+});
+
+firebase.database().ref().child('now').on('value', function(snapshot) {
+    if (snapshot.val().status == 0){
+        now_status = 0;
+        if (empty == 0){
+            if (next_id == userid){
+                firebase.database().ref().child('order').once('value').then(function(snapshot){
+                    firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
+                });
+                firebase.database().ref().child('now').set({
+                    status : 1,
+                    id : userid,
+                    name : username
+                });
+                location.href = `./on.html?id=${userid}&name=${username}`;
+            }
+        }
+    } else{
+        now_status = 1;
+        now_id = snapshot.val().id; 
+        now_name = snapshot.val().name; 
     }
 });
 
@@ -142,14 +176,15 @@ want.addEventListener('click', function() {
   });
 
 add.addEventListener('click', function() {
-    if (now_user != userid){
+    if (now_id != userid){
         firebase.database().ref('/add').push({
             id: userid,
         });
     }
   });
+
 subtract.addEventListener('click', function() {
-    if (now_user != userid){
+    if (now_id != userid){
         firebase.database().ref('/subtract').push({
             id: userid,
         });
