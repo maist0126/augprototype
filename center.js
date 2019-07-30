@@ -95,19 +95,17 @@ firebase.database().ref().child('add').once('value').then(function(snapshot) {
             add = add + 1;
         }
         changecolor('#0060ff');
-        firebase.database().ref().child('add').set(null);
     }
+    firebase.database().ref().child('add').set(null);
 });
 
 firebase.database().ref().child('add').on('value', function(snapshot) {
     if (start_status == 1){
-        let add = 0;
         for (let key in snapshot.val()) {
-            add = add + 1;
+            changecolor('#0060ff');
         }
-        changecolor('#0060ff');
-        firebase.database().ref().child('add').set(null);
     }
+    firebase.database().ref().child('add').set(null);
 });
 
 
@@ -118,9 +116,6 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
         RemainDate = timer_time;
         ArchiveTime = 0;
         arc=setInterval('arc_time()',100);
-        firebase.database().ref('/time_over').set({
-            status: 1,
-        });
         var current = document.getElementById('current');
         current.style.color = '#ff0000';
         if (next_user_true == 1){
@@ -160,6 +155,16 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
             time: worst[0].value,
         });
     }
+});
+
+firebase.database().ref().child('time_more').on('value', function(snapshot) {
+    if (start_status == 1){
+        for (let key in snapshot.val()){
+            RemainDate = RemainDate + timer_time;
+        console.log('a');
+        }
+    }
+    firebase.database().ref().child('time_more').set(null);
 });
 
 function innerUsername(snapshot){

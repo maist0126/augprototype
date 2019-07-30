@@ -7,6 +7,8 @@ let userid = undefined;
 let username = undefined;
 let start_status = 0;
 let myTimer = undefined;
+let democracy = undefined;
+let help_status = undefined;
 
 const firebaseConfig = {
     apiKey: "AIzaSyDgKn2qdiotLT3IhUoWe1h2mMGKXpQMm_4",
@@ -19,11 +21,12 @@ const firebaseConfig = {
 };
 const noSleep = new NoSleep();
 
-let RemainDate = 60000;
-
 window.onload = function(){
     userid = getQueryStringObject().id;
     username = ""+getQueryStringObject().name;
+    firebase.database().ref('/time_over').set({
+        status: 1  
+    });
 };
 
 document.addEventListener('click', function enableNoSleep() {
@@ -32,6 +35,10 @@ document.addEventListener('click', function enableNoSleep() {
   }, false);
 
 firebase.initializeApp(firebaseConfig);
+firebase.database().ref('user_count').once('value').then(function(snapshot){
+    democracy = snapshot.val()/3;
+});
+
 firebase.database().ref().child('time_over').on('value', function(snapshot) {
     if (snapshot.val().status == 0){
         start_status = 0;
@@ -41,14 +48,20 @@ firebase.database().ref().child('time_over').on('value', function(snapshot) {
         firebase.database().ref('/now').set({
             status : 0
         });
+        firebase.database().ref('/help').set(null);
         location.href = `./user.html?id=${userid}&name=${username}`;
     }
 });
 firebase.database().ref().child('subtract').on('value', function(snapshot) {
     if (start_status == 1){
-        changecolor('#ff3e98');
-        firebase.database().ref().child('subtract').set(null);
+        for (let key in snapshot.val()){
+            changecolor('#ff3e98');
+            firebase.database().ref('/help/'+snapshot.val()[key].id).set({
+                status: 1  
+            });
+        }
     }
+    firebase.database().ref().child('subtract').set(null);
 });
 
 mic_on.addEventListener('click',function(e){
@@ -59,13 +72,18 @@ mic_on.addEventListener('click',function(e){
     firebase.database().ref('/now').set({
         status : 0
     });
+    firebase.database().ref('/help').set(null);
     location.href = `./user.html?id=${userid}&name=${username}`;
 });
 
 mic_off.addEventListener('click',function(e){
     start_status = 1;
+    help_status = 1;
     firebase.database().ref('/start_status').set({
         status: 1
+    });
+    firebase.database().ref('user_count').once('value').then(function(snapshot){
+        democracy = snapshot.val()/3;
     });
     $("#mic_on").toggle(); // show -> hide , hide -> show
     $("#mic_off").toggle();
@@ -73,10 +91,27 @@ mic_off.addEventListener('click',function(e){
 });
 
 help.addEventListener('click',function(e){
-    help.style.backgroundColor = '#ffffff';
-    help.style.color = '#333333';
-    help.style.fontWeight = '700';
-    help.setAttribute("value", "요청되었습니다");
+    if (help_status == 1){
+        firebase.database().ref('/help').once('value').then(function(snapshot){
+            let count = 0;
+            for (let key in snapshot.val()) {
+                count = count + 1;
+            }
+            help.style.color = '#333333';
+            help.style.fontWeight = '700';
+            if (count > democracy){
+                help.style.backgroundColor = '#ff0000';
+                help.setAttribute("value", "연장 실패"); 
+            } else{
+                firebase.database().ref('/time_more').push({
+                    status: 1,
+                });
+                help.style.backgroundColor = '#ffffff';
+                help.setAttribute("value", "연장 성공"); 
+            }
+            help_status = 0;
+        });
+    }
 });
 
 function changecolor(color){
