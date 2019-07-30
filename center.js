@@ -22,17 +22,12 @@ let ArchiveTime = 0;
 let now_id = undefined;
 let now_name = undefined;
 
+let user_count = 0;
+
 let myTimer;
 
-let datatable = [
-    ["Element", "Time", { role: "style" } ],
-    ["유저 1", 0, "#b87333"],
-    ["유저 2", 0, "gold"],
-    ["유저 3", 0, "#b87333"],
-    ["유저 4", 0, "gold"],
-    ["유저 5", 0, "#b87333"],
-    ["유저 6", 0, "gold"]
-];
+let datatable = [];
+
 
 document.addEventListener('click', function enableNoSleep() {
     document.removeEventListener('click', enableNoSleep, false);
@@ -40,15 +35,6 @@ document.addEventListener('click', function enableNoSleep() {
   }, false);
 
 firebase.initializeApp(firebaseConfig);
-firebase.database().ref().child('data').once('value').then(function(snapshot) {
-    datatable[1][1] = snapshot.val()[0].user1; 
-    datatable[2][1] = snapshot.val()[0].user2; 
-    datatable[3][1] = snapshot.val()[0].user3;    
-    datatable[4][1] = snapshot.val()[0].user4; 
-    datatable[5][1] = snapshot.val()[0].user5; 
-    datatable[6][1] = snapshot.val()[0].user6; 
-    google.charts.setOnLoadCallback(drawChart);
-});
 firebase.database().ref().child('now').once('value').then(function(snapshot) {
     if (snapshot.val().status == 0){
         document.getElementById("current").innerHTML="없음";
@@ -68,24 +54,27 @@ firebase.database().ref().child('now').on('value', function(snapshot) {
     } 
 });
 
-firebase.database().ref().child('nickname').once('value').then(function(snapshot) {
-    datatable[1][0] = snapshot.val()[1]; 
-    datatable[2][0] = snapshot.val()[2]; 
-    datatable[3][0] = snapshot.val()[3];    
-    datatable[4][0] = snapshot.val()[4]; 
-    datatable[5][0] = snapshot.val()[5]; 
-    datatable[6][0] = snapshot.val()[6]; 
+firebase.database().ref().child('data').once('value').then(function(snapshot) {
+    datatable = [];
+    datatable.push(["Element", "Time", { role: "style" }]);
+    for (let key in snapshot.val()){
+        if (key%2 ==1){
+            datatable.push([snapshot.val()[key].name, snapshot.val()[key].time,"gold"]);
+        } else{
+            datatable.push([snapshot.val()[key].name, snapshot.val()[key].time,"silver"]);
+        }
+        
+    }
     google.charts.setOnLoadCallback(drawChart);     
 });
 
-firebase.database().ref().child('nickname').on('value', function(snapshot) {
-    datatable[1][0] = snapshot.val()[1]; 
-    datatable[2][0] = snapshot.val()[2]; 
-    datatable[3][0] = snapshot.val()[3];    
-    datatable[4][0] = snapshot.val()[4]; 
-    datatable[5][0] = snapshot.val()[5]; 
-    datatable[6][0] = snapshot.val()[6]; 
-    google.charts.setOnLoadCallback(drawChart);  
+firebase.database().ref().child('data').on('value', function(snapshot) {
+    datatable = [];
+    datatable.push(["Element", "Time", { role: "style" }]);
+    for (let key in snapshot.val()){
+        datatable.push([snapshot.val()[key].name, snapshot.val()[key].time,"gold"]);
+    }
+    google.charts.setOnLoadCallback(drawChart); 
 });
 
 google.charts.load('current', {'packages':['corechart']});
@@ -129,6 +118,9 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
         RemainDate = timer_time;
         ArchiveTime = 0;
         arc=setInterval('arc_time()',100);
+        firebase.database().ref('/time_over').set({
+            status: 1,
+        });
         var current = document.getElementById('current');
         current.style.color = '#ff0000';
         if (next_user_true == 1){
@@ -148,25 +140,15 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
         ArchiveTime = datatable[now_id][1] + ArchiveTime/1000;
         datatable[now_id][1] = ArchiveTime;
         drawChart();
-        firebase.database().ref('/data/0').set({
-            user1: datatable[1][1],
-            user2: datatable[2][1],
-            user3: datatable[3][1],
-            user4: datatable[4][1],
-            user5: datatable[5][1],
-            user6: datatable[6][1],
-        });
         firebase.database().ref('/data/'+now_id).set({
-            time: ArchiveTime,
+            name: now_name,
+            time: ArchiveTime
         });
-        let worst = [
-            {name: 1, value: datatable[1][1]},
-            {name: 2, value: datatable[2][1]},
-            {name: 3, value: datatable[3][1]},
-            {name: 4, value: datatable[4][1]},
-            {name: 5, value: datatable[5][1]},
-            {name: 6, value: datatable[6][1]}
-        ];
+        let worst = [];
+        for (let i = 1; i<datatable.length; i++){
+            worst.push({id: i, value: datatable[i][1]});
+        }
+        console.log(worst);
         // sort by value
         worst.sort(function (a, b) {
             if(a.hasOwnProperty('value')){
@@ -174,7 +156,7 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
             }
         });
         firebase.database().ref('worst').set({
-            id: worst[0].name,
+            id: worst[0].id,
             time: worst[0].value,
         });
     }
@@ -211,11 +193,6 @@ function innerUsername(snapshot){
     }
 }
 
-function reset(){
-    firebase.database().ref().set(null);
-    order = [];
-}
-
 function msg_time() {
 	var hours = Math.floor((RemainDate % (1000 * 60 * 60 * 24)) / (1000*60*60));
 	var minutes = Math.floor((RemainDate % (1000 * 60 * 60)) / (1000*60));
@@ -228,14 +205,8 @@ function msg_time() {
 	if (RemainDate <= 0) {      
         clearInterval(tid);
         msg_state = 0;
-        start_status = 0;
-        firebase.database().ref('/start_status').set({
-            start_status: 0,
-        });
-        now_user = undefined;
-        firebase.database().ref('/now').set({
-            username: null,
-            nickname: '없음'
+        firebase.database().ref('/time_over').set({
+            status: 0,
         });
 	} else if (RemainDate >= 1000*16) {
 		alarm_status = 1;

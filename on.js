@@ -32,12 +32,20 @@ document.addEventListener('click', function enableNoSleep() {
   }, false);
 
 firebase.initializeApp(firebaseConfig);
+firebase.database().ref().child('time_over').on('value', function(snapshot) {
+    if (snapshot.val().status == 0){
+        start_status = 0;
+        firebase.database().ref('/start_status').set({
+            status: 0
+        });
+        firebase.database().ref('/now').set({
+            status : 0
+        });
+        location.href = `./user.html?id=${userid}&name=${username}`;
+    }
+});
 firebase.database().ref().child('subtract').on('value', function(snapshot) {
     if (start_status == 1){
-        let subtract = 0;
-        for (let key in snapshot.val()) {
-            subtract = subtract + 1;
-        }
         changecolor('#ff3e98');
         firebase.database().ref().child('subtract').set(null);
     }

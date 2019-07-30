@@ -34,7 +34,6 @@ const noSleep = new NoSleep();
 window.onload = function(){
     userid = getQueryStringObject().id;
     username = getQueryStringObject().name;
-    firebase.database().ref('/nickname/'+userid).set(username);
     label.innerHTML= ""+username;
 }
 
