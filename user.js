@@ -159,12 +159,10 @@ firebase.database().ref().child('now').on('value', function(snapshot) {
 ///
 want.addEventListener('click', function() {
     if(worst_id == userid){
-        if(worst_time != 0){
-            firebase.database().ref('/order/!a').set({
-                id: userid,
-                name: username
-            });
-        }
+        firebase.database().ref('/order/!a').set({
+            id: userid,
+            name: username
+        });
     }
     if (last_id != userid){
         firebase.database().ref('/order').push({
