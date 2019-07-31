@@ -50,6 +50,8 @@ firebase.database().ref().child('time_over').on('value', function(snapshot) {
         });
         firebase.database().ref('/help').set(null);
         location.href = `./user.html?id=${userid}&name=${username}`;
+    } else if (snapshot.val().status == 2){
+        $("#help").toggle();
     }
 });
 firebase.database().ref().child('subtract').on('value', function(snapshot) {
@@ -87,7 +89,6 @@ mic_off.addEventListener('click',function(e){
     });
     $("#mic_on").toggle(); // show -> hide , hide -> show
     $("#mic_off").toggle();
-    $("#help").toggle(); // show -> hide , hide -> show
 });
 
 help.addEventListener('click',function(e){

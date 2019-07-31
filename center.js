@@ -72,7 +72,12 @@ firebase.database().ref().child('data').on('value', function(snapshot) {
     datatable = [];
     datatable.push(["Element", "Time", { role: "style" }]);
     for (let key in snapshot.val()){
-        datatable.push([snapshot.val()[key].name, snapshot.val()[key].time,"gold"]);
+        if (key%2 ==1){
+            datatable.push([snapshot.val()[key].name, snapshot.val()[key].time,"gold"]);
+        } else{
+            datatable.push([snapshot.val()[key].name, snapshot.val()[key].time,"silver"]);
+        }
+        
     }
     google.charts.setOnLoadCallback(drawChart); 
 });
@@ -219,7 +224,10 @@ function msg_time() {
 	} else if (RemainDate <= 1000*15) {
 		if (alarm_status == 1){
 		    play();
-		    alarm_status = 0;
+            alarm_status = 0;
+            firebase.database().ref('/time_over').set({
+                status: 2,
+            });
 		}
 		RemainDate = RemainDate - 100;
 	}
