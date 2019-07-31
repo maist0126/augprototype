@@ -97,16 +97,17 @@ help.addEventListener('click',function(e){
             for (let key in snapshot.val()) {
                 count = count + 1;
             }
-            help.style.color = '#333333';
             help.style.fontWeight = '700';
             if (count > democracy){
                 help.style.backgroundColor = '#ff0000';
+                help.style.color = '#ffffff';
                 help.setAttribute("value", "연장 실패"); 
             } else{
                 firebase.database().ref('/time_more').push({
                     status: 1,
                 });
                 help.style.backgroundColor = '#ffffff';
+                help.style.color = '#333333';
                 help.setAttribute("value", "연장 성공"); 
             }
             help_status = 0;
