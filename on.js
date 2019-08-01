@@ -127,7 +127,7 @@ function changecolor(color){
 function vibrate() {
     console.log("shut up!");
     if (navigator.vibrate) {
-        navigator.vibrate(20000); // 진동을 울리게 한다. 1000ms = 1초
+        navigator.vibrate(10000); // 진동을 울리게 한다. 1000ms = 1초
     }
     else {
     }
