@@ -35,9 +35,9 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
     innerUsername(snapshot);
 });
 
-firebase.database().ref().child('start_status').on('value', function(snapshot) {
-    if (snapshot.val().start_status == 1){
-        start_status = 1;
+firebase.database().ref().child('now_status').on('value', function(snapshot) {
+    if (snapshot.val().status == 0){
+        
     } else if (snapshot.val().start_status == 0) {
         start_status = 0;
     }

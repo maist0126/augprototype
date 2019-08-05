@@ -137,7 +137,12 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
         current.style.color = '#000000';
         document.all.timer.innerHTML = "";
         msg_state = 0;
-        ArchiveTime = datatable[now_id][1] + ArchiveTime/1000;
+        ArchiveTime = ArchiveTime/1000;
+        firebase.database().ref('/archiving').push({
+            id: now_id,
+            time: ArchiveTime,
+        });
+        ArchiveTime = datatable[now_id][1] + ArchiveTime;
         datatable[now_id][1] = ArchiveTime;
         drawChart();
         firebase.database().ref('/data/'+now_id).set({
