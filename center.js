@@ -59,7 +59,12 @@ firebase.database().ref().child('archiving').on('value', function(snapshot) {
         for (let i = 1; i<11; i++){
             for (let j = 1; j<11; j++){
                 if (`${speech_order[k][0]}&${speech_order[k+1][0]}` == `${i}&${j}`){
-                    dynamics[index] = {id: `${i}&${j}`, value: speech_order[k+1][1], state: `${speech_order[k][2]} said, then ${speech_order[k+1][2]} said`};
+                    if(dynamics[index]==null){
+                        dynamics[index] = {id: `${i}&${j}`, value: speech_order[k+1][1], state: `${speech_order[k][2]} said, then ${speech_order[k+1][2]} said`};
+                    } else{
+                        let a = dynamics[index].value + speech_order[k+1][1];
+                        dynamics[index] = {id: `${i}&${j}`, value: a, state: `${speech_order[k][2]} said, then ${speech_order[k+1][2]} said`};
+                    }
                 }
                 index ++;
             }
@@ -176,7 +181,10 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
                     blue = setInterval(blue_timer, 1000);
                     msg_state = 1;
                 }
-            }   
+            }
+            firebase.database().ref('/time_over').set({
+                status: 1  
+            });   
         });
     } else if (snapshot.val().status == 0) {
         start_status = 0;
@@ -260,38 +268,6 @@ function innerUsername(snapshot){
     }
 }
 
-// function msg_time() {
-// 	var hours = Math.floor((RemainDate % (1000 * 60 * 60 * 24)) / (1000*60*60));
-// 	var minutes = Math.floor((RemainDate % (1000 * 60 * 60)) / (1000*60));
-// 	var seconds = Math.floor((RemainDate % (1000 * 60)) / 1000);
-
-// 	m = hours + ":" +  minutes + ":" + seconds ; // 남은 시간 text형태로 변경
-	  
-//     document.all.timer.innerHTML = m;
-    
-// 	if (RemainDate <= 0) {      
-//         clearInterval(tid);
-//         msg_state = 0;
-//         // firebase.database().ref('/time_over').set({
-//         //     status: 0,
-//         // });
-// 	} else if (RemainDate >= 1000*16) {
-// 		alarm_status = 1;
-// 		RemainDate = RemainDate - 100;
-// 	} else if (RemainDate <= 1000*15) {
-// 		if (alarm_status == 1){
-// 		    play();
-//             alarm_status = 0;
-//             firebase.database().ref('/time_over').set({
-//                 status: 2,
-//             });
-// 		}
-// 		RemainDate = RemainDate - 100;
-// 	}
-// 	else{
-// 	    RemainDate = RemainDate - 100;
-//     }
-// }
 
 function arc_time() {
 	ArchiveTime = ArchiveTime + 100;

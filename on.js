@@ -25,7 +25,7 @@ window.onload = function(){
     userid = getQueryStringObject().id;
     username = ""+getQueryStringObject().name;
     firebase.database().ref('/time_over').set({
-        status: 1  
+        status: 0  
     });
 };
 
@@ -40,16 +40,9 @@ firebase.database().ref('user_count').once('value').then(function(snapshot){
 });
 
 firebase.database().ref().child('time_over').on('value', function(snapshot) {
-    if (snapshot.val().status == 0){
-        start_status = 0;
-        firebase.database().ref('/start_status').set({
-            status: 0
-        });
-        firebase.database().ref('/now').set({
-            status : 0
-        });
-        firebase.database().ref('/help').set(null);
-        location.href = `./user.html?id=${userid}&name=${username}`;
+    if (snapshot.val().status == 1){
+        $("#mic_on").toggle(); // show -> hide , hide -> show
+        $("#mic_off").toggle();
     } else if (snapshot.val().status == 2){
         $("#help").toggle();
     }
@@ -87,8 +80,6 @@ mic_off.addEventListener('click',function(e){
     firebase.database().ref('user_count').once('value').then(function(snapshot){
         democracy = snapshot.val()/3;
     });
-    $("#mic_on").toggle(); // show -> hide , hide -> show
-    $("#mic_off").toggle();
 });
 
 help.addEventListener('click',function(e){
