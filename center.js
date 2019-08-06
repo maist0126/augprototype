@@ -48,6 +48,33 @@ document.addEventListener('click', function enableNoSleep() {
   }, false);
 
 firebase.initializeApp(firebaseConfig);
+firebase.database().ref().child('archiving').on('value', function(snapshot) {
+    let speech_order = [];
+    let dynamics = new Array();
+	for (let key in snapshot.val()) {
+        speech_order.push([snapshot.val()[key].id, snapshot.val()[key].time, snapshot.val()[key].name]);
+    }
+    for (let k = 0; k<speech_order.length-1; k++){
+        let index = 0;
+        for (let i = 1; i<11; i++){
+            for (let j = 1; j<11; j++){
+                if (`${speech_order[k][0]}&${speech_order[k+1][0]}` == `${i}&${j}`){
+                    dynamics[index] = {id: `${i}&${j}`, value: speech_order[k+1][1], state: `${speech_order[k][2]} said, then ${speech_order[k+1][2]} said`};
+                }
+                index ++;
+            }
+        }
+    }
+    dynamics.sort(function (a, b) { 
+        if(a.hasOwnProperty('value')){
+            return b.value - a.value;
+        }
+    });
+    document.getElementById('dynamics1').innerHTML = `1: ${dynamics[0].state} for ${dynamics[0].value} seconds.`
+    document.getElementById('dynamics2').innerHTML = `2: ${dynamics[1].state} for ${dynamics[1].value} seconds.`
+    document.getElementById('dynamics3').innerHTML = `3: ${dynamics[2].state} for ${dynamics[2].value} seconds.`
+    console.log(dynamics[0].state);
+});
 firebase.database().ref().child('now').once('value').then(function(snapshot) {
     if (snapshot.val().status == 0){
         document.getElementById("current").innerHTML="없음";
@@ -131,6 +158,9 @@ firebase.database().ref().child('add').on('value', function(snapshot) {
 firebase.database().ref().child('start_status').on('value', function(snapshot) {
     if (snapshot.val().status == 1){
         firebase.database().ref('/data/'+now_id).once('value').then(function(snapshot) {
+            start_status = 1;
+            ArchiveTime = 0;
+            arc=setInterval('arc_time()',100);
             ctx.lineWidth = strokeWeight;
             ctx.fillStyle = "#09F";
             ctx.strokeStyle = "#09F";
@@ -139,10 +169,6 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
             diff = ((blue_indicator/remainSec)*Math.PI*2*10).toFixed(2);
             ctx.arc(r, r, r - strokeWeight/2, start, diff/10+start, false);
             ctx.stroke();
-
-            start_status = 1;
-            ArchiveTime = 0;
-            arc=setInterval('arc_time()',100);
             var current = document.getElementById('current');
             current.style.color = '#09F';
             if (next_user_true == 1){
@@ -165,6 +191,7 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
         ArchiveTime = ArchiveTime/1000;
         firebase.database().ref('/archiving').push({
             id: now_id,
+            name: now_name,
             time: ArchiveTime,
         });
         ArchiveTime = datatable[now_id][1] + ArchiveTime;
