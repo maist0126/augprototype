@@ -67,12 +67,12 @@ firebase.database().ref().child('subtract').on('value', function(snapshot) {
 });
 
 mic_on.addEventListener('click',function(e){
+    firebase.database().ref('/now').set({
+        status : 0
+    });
     start_status = 0;
     firebase.database().ref('/start_status').set({
         status: 0
-    });
-    firebase.database().ref('/now').set({
-        status : 0
     });
     firebase.database().ref('/help').set(null);
     location.href = `./user.html?id=${userid}&name=${username}`;

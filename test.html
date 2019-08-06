@@ -17,41 +17,14 @@
         let blue_indicator = remainSec;
         let red_indicator = 1;
 
-        function blue_timer(){
-            diff = ((blue_indicator/remainSec)*Math.PI*2*10).toFixed(2);
-            ctx.clearRect(0,0,cw,cw);
-            ctx.lineWidth = strokeWeight;
-            ctx.fillStyle = "#09F";
-            ctx.strokeStyle = "#09F";
-            ctx.textAlign = "center";
-            ctx.font = '48px serif';
-            ctx.fillText(blue_indicator+" sec", r, r, cw - strokeWeight);
-            ctx.beginPath();
-            ctx.arc(r, r, r - strokeWeight/2, start, diff/10+start, false);
-            ctx.stroke();
-            if (blue_indicator <= 0){
-                let bim = setInterval(red_timer, 1000);
-                clearTimeout(sim);
-            }
-            blue_indicator -- ;
-        }
 
-        function red_timer(){
-            diff = ((red_indicator/remainSec)*Math.PI*2*10).toFixed(2);
-            ctx.clearRect(0,0,cw,cw);
-            ctx.lineWidth = strokeWeight;
-            ctx.fillStyle = "#f00";
-            ctx.strokeStyle = "#f00";
-            ctx.textAlign = "center";
-            ctx.font = '48px serif';
-            ctx.fillText(red_indicator+" sec", r, r, cw - strokeWeight);
-            ctx.beginPath();
-            ctx.arc(r, r, r - strokeWeight/2, start-diff/10, start,  false);
-            ctx.stroke();
-            red_indicator ++ ;
-        }
-
-        let sim = setInterval(blue_timer, 1000);
+        ctx.lineWidth = strokeWeight;
+        ctx.fillStyle = "#09F";
+        ctx.strokeStyle = "#09F";
+        ctx.beginPath();
+        ctx.arc(r, r, r - strokeWeight/2, 0, Math.PI*2, false);
+        ctx.stroke();
+        
     </script>
 </body>
 </html>

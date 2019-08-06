@@ -22,7 +22,8 @@ function create() {
         firebase.database().ref().child('user_count').set(user_count);
         firebase.database().ref('/data/'+user_count).set({
             name: user_nickname,
-            time: 0 
+            time: 0,
+            penalty: 0 
         });
         location.href = `./user.html?id=${user_count}&name=${user_nickname}`;
     });
@@ -40,4 +41,5 @@ function reset() {
     firebase.database().ref().child('now').set({
         status: 0
     });
+    firebase.database().ref().child('archiving').set(null);
 }

@@ -14,9 +14,6 @@ let alarm_status = 1;
 let start_status = 0;
 let next_user_true = 0;
 let msg_state = 0;
-let tid;
-const timer_time = 60000;
-let RemainDate = undefined;
 let arc;
 let ArchiveTime = 0;
 let now_id = undefined;
@@ -27,6 +24,22 @@ let user_count = 0;
 let myTimer;
 
 let datatable = [];
+
+
+///
+const ctx = document.getElementById('my_canvas').getContext('2d');
+const start = Math.PI*3/2;
+const cw = ctx.canvas.width;
+const r = cw/2;
+const strokeWeight = r;
+let diff;
+const remainSec = 60;
+let blue_indicator = remainSec;
+let red_indicator = 1;
+let blue;
+let red;
+let penalty = 0;
+///
 
 
 document.addEventListener('click', function enableNoSleep() {
@@ -117,22 +130,34 @@ firebase.database().ref().child('add').on('value', function(snapshot) {
 
 firebase.database().ref().child('start_status').on('value', function(snapshot) {
     if (snapshot.val().status == 1){
-        start_status = 1;
-        RemainDate = timer_time;
-        ArchiveTime = 0;
-        arc=setInterval('arc_time()',100);
-        var current = document.getElementById('current');
-        current.style.color = '#ff0000';
-        if (next_user_true == 1){
-            if (msg_state == 0){
-                tid=setInterval('msg_time()', 100);
-                msg_state = 1;
-            }
-        }
+        firebase.database().ref('/data/'+now_id).once('value').then(function(snapshot) {
+            ctx.lineWidth = strokeWeight;
+            ctx.fillStyle = "#09F";
+            ctx.strokeStyle = "#09F";
+            ctx.beginPath();
+            blue_indicator = remainSec - snapshot.val().penalty;
+            diff = ((blue_indicator/remainSec)*Math.PI*2*10).toFixed(2);
+            ctx.arc(r, r, r - strokeWeight/2, start, diff/10+start, false);
+            ctx.stroke();
+
+            start_status = 1;
+            ArchiveTime = 0;
+            arc=setInterval('arc_time()',100);
+            var current = document.getElementById('current');
+            current.style.color = '#09F';
+            if (next_user_true == 1){
+                if (msg_state == 0){
+                    blue = setInterval(blue_timer, 1000);
+                    msg_state = 1;
+                }
+            }   
+        });
     } else if (snapshot.val().status == 0) {
         start_status = 0;
-        clearInterval(tid);
+        clearInterval(blue);
+        ctx.clearRect(0,0,cw,cw);
         clearInterval(arc);
+        clearInterval(red);
         var current = document.getElementById('current');
         current.style.color = '#000000';
         document.all.timer.innerHTML = "";
@@ -147,13 +172,14 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
         drawChart();
         firebase.database().ref('/data/'+now_id).set({
             name: now_name,
-            time: ArchiveTime
+            time: ArchiveTime,
+            penalty: penalty
         });
+        penalty = 0;
         let worst = [];
         for (let i = 1; i<datatable.length; i++){
             worst.push({id: i, value: datatable[i][1]});
         }
-        console.log(worst);
         // sort by value
         worst.sort(function (a, b) {
             if(a.hasOwnProperty('value')){
@@ -170,8 +196,7 @@ firebase.database().ref().child('start_status').on('value', function(snapshot) {
 firebase.database().ref().child('time_more').on('value', function(snapshot) {
     if (start_status == 1){
         for (let key in snapshot.val()){
-            RemainDate = RemainDate + timer_time;
-        console.log('a');
+            blue_indicator = blue_indicator + remainSec;
         }
     }
     firebase.database().ref().child('time_more').set(null);
@@ -187,7 +212,7 @@ function innerUsername(snapshot){
         next_user_true = 1;
         if (start_status == 1){
             if (msg_state == 0){
-                tid=setInterval('msg_time()', 100);
+                blue = setInterval(blue_timer, 1000);
                 msg_state = 1;
             }
         }
@@ -208,38 +233,38 @@ function innerUsername(snapshot){
     }
 }
 
-function msg_time() {
-	var hours = Math.floor((RemainDate % (1000 * 60 * 60 * 24)) / (1000*60*60));
-	var minutes = Math.floor((RemainDate % (1000 * 60 * 60)) / (1000*60));
-	var seconds = Math.floor((RemainDate % (1000 * 60)) / 1000);
+// function msg_time() {
+// 	var hours = Math.floor((RemainDate % (1000 * 60 * 60 * 24)) / (1000*60*60));
+// 	var minutes = Math.floor((RemainDate % (1000 * 60 * 60)) / (1000*60));
+// 	var seconds = Math.floor((RemainDate % (1000 * 60)) / 1000);
 
-	m = hours + ":" +  minutes + ":" + seconds ; // 남은 시간 text형태로 변경
+// 	m = hours + ":" +  minutes + ":" + seconds ; // 남은 시간 text형태로 변경
 	  
-    document.all.timer.innerHTML = m;
+//     document.all.timer.innerHTML = m;
     
-	if (RemainDate <= 0) {      
-        clearInterval(tid);
-        msg_state = 0;
-        firebase.database().ref('/time_over').set({
-            status: 0,
-        });
-	} else if (RemainDate >= 1000*16) {
-		alarm_status = 1;
-		RemainDate = RemainDate - 100;
-	} else if (RemainDate <= 1000*15) {
-		if (alarm_status == 1){
-		    play();
-            alarm_status = 0;
-            firebase.database().ref('/time_over').set({
-                status: 2,
-            });
-		}
-		RemainDate = RemainDate - 100;
-	}
-	else{
-	    RemainDate = RemainDate - 100;
-    }
-}
+// 	if (RemainDate <= 0) {      
+//         clearInterval(tid);
+//         msg_state = 0;
+//         // firebase.database().ref('/time_over').set({
+//         //     status: 0,
+//         // });
+// 	} else if (RemainDate >= 1000*16) {
+// 		alarm_status = 1;
+// 		RemainDate = RemainDate - 100;
+// 	} else if (RemainDate <= 1000*15) {
+// 		if (alarm_status == 1){
+// 		    play();
+//             alarm_status = 0;
+//             firebase.database().ref('/time_over').set({
+//                 status: 2,
+//             });
+// 		}
+// 		RemainDate = RemainDate - 100;
+// 	}
+// 	else{
+// 	    RemainDate = RemainDate - 100;
+//     }
+// }
 
 function arc_time() {
 	ArchiveTime = ArchiveTime + 100;
@@ -278,8 +303,8 @@ function drawChart() {
 
     var options = {
         title: "발언 누적 시간 그래프",
-        width: 1200,
-        height: 400,
+        width: 1400,
+        height: 500,
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
     };
@@ -287,3 +312,57 @@ function drawChart() {
     chart.draw(view, options);
 }
 
+
+
+function blue_timer(){
+    diff = ((blue_indicator/remainSec)*Math.PI*2*10).toFixed(2);
+    ctx.clearRect(0,0,cw,cw);
+    ctx.lineWidth = strokeWeight;
+    ctx.fillStyle = "#09F";
+    ctx.strokeStyle = "#09F";
+    ctx.textAlign = "center";
+    ctx.font = '48px serif';
+    ctx.fillText(blue_indicator+" sec", r, r, cw - strokeWeight);
+    ctx.beginPath();
+    ctx.arc(r, r, r - strokeWeight/2, start, diff/10+start, false);
+    ctx.stroke();
+    if (blue_indicator <= 0) {
+        msg_state = 0;
+        red_indicator = 1;
+        red = setInterval(red_timer, 1000);
+        clearTimeout(blue);
+	} else if (blue_indicator >= 16) {
+		alarm_status = 1;
+		blue_indicator = blue_indicator - 1;
+	} else if (blue_indicator <= 15) {
+		if (alarm_status == 1){
+		    play();
+            alarm_status = 0;
+            firebase.database().ref('/time_over').set({
+                status: 2,
+            });
+		}
+		blue_indicator = blue_indicator - 1;
+	}
+	else{
+	    blue_indicator = blue_indicator - 1;
+    }
+}
+
+function red_timer(){
+    var current = document.getElementById('current');
+    current.style.color = '#f00';
+    diff = ((red_indicator/remainSec)*Math.PI*2*10).toFixed(2);
+    ctx.clearRect(0,0,cw,cw);
+    ctx.lineWidth = strokeWeight;
+    ctx.fillStyle = "#f00";
+    ctx.strokeStyle = "#f00";
+    ctx.textAlign = "center";
+    ctx.font = '48px serif';
+    ctx.fillText(red_indicator+" sec", r, r, cw - strokeWeight);
+    ctx.beginPath();
+    ctx.arc(r, r, r - strokeWeight/2, start-diff/10, start,  false);
+    ctx.stroke();
+    red_indicator ++ ;
+    penalty ++;
+}
