@@ -60,24 +60,21 @@ firebase.database().ref().child('order').once('value').then(function(snapshot) {
         empty = 1;
     } else {
         empty = 0;
-        firebase.database().ref().child('now').once('value').then(function(snapshot) {
-            if (snapshot.val().status == 0){
-                now_status = 0;
-                if (next_id == userid){
-                    firebase.database().ref().child('now').set({
-                        status : 1,
-                        id : userid,
-                        name : username
-                    });
-                    firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
-                    location.href = `./on.html?id=${userid}&name=${username}`;
-                }
-            } else{
-                now_status = 1;
-                now_id = snapshot.val().id; 
-                now_name = snapshot.val().name; 
+        if (now_status == 0){
+            if (next_id == userid){
+                firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
+                firebase.database().ref().child('now').set({
+                    status : 1,
+                    id : userid,
+                    name : username
+                });
+                location.href = `./on.html?id=${userid}&name=${username}`;
             }
-        });
+        } else{
+            now_status = 1;
+            now_id = snapshot.val().id; 
+            now_name = snapshot.val().name; 
+        }
     }
 });
 
@@ -94,26 +91,24 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
         empty = 1;
     } else {
         empty = 0;
-        firebase.database().ref().child('now').once('value').then(function(snapshot) {
-            if (snapshot.val().status == 0){
-                now_status = 0;
-                if (next_id == userid){
-                    firebase.database().ref().child('now').set({
-                        status : 1,
-                        id : userid,
-                        name : username
-                    });
-                    firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
-                    location.href = `./on.html?id=${userid}&name=${username}`;
-                }
-            } else{
-                now_status = 1;
-                now_id = snapshot.val().id; 
-                now_name = snapshot.val().name; 
+        if (now_status == 0){
+            if (next_id == userid){
+                firebase.database().ref().child('now').set({
+                    status : 1,
+                    id : userid,
+                    name : username
+                });
+                firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
+                location.href = `./on.html?id=${userid}&name=${username}`;
             }
-        });
+        } else{
+            now_status = 1;
+            now_id = snapshot.val().id; 
+            now_name = snapshot.val().name; 
+        }
     }
 });
+
 firebase.database().ref().child('worst').once('value').then(function(snapshot) {
     worst_id = snapshot.val().id;
     worst_time = snapshot.val().time;
