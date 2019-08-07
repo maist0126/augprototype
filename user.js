@@ -68,9 +68,7 @@ firebase.database().ref().child('order').once('value').then(function(snapshot) {
                     id : userid,
                     name : username
                 });
-                setTimeout(() => {
-                    location.href = `./on.html?id=${userid}&name=${username}`;
-                }, 500);
+                location.href = `./on.html?id=${userid}&name=${username}`;
             }
         } else{
             now_status = 1;
@@ -101,9 +99,7 @@ firebase.database().ref().child('order').on('value', function(snapshot) {
                     name : username
                 });
                 firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
-                setTimeout(() => {
-                    location.href = `./on.html?id=${userid}&name=${username}`;
-                }, 500);
+                location.href = `./on.html?id=${userid}&name=${username}`;
             }
         } else{
             now_status = 1;
@@ -134,9 +130,7 @@ firebase.database().ref().child('now').once('value').then(function(snapshot) {
                         name : username
                     });
                     firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
-                    setTimeout(() => {
-                        location.href = `./on.html?id=${userid}&name=${username}`;
-                    }, 500);
+                    location.href = `./on.html?id=${userid}&name=${username}`;
                 });
             }
         }
@@ -159,9 +153,7 @@ firebase.database().ref().child('now').on('value', function(snapshot) {
                         name : username
                     });
                     firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
-                    setTimeout(() => {
-                        location.href = `./on.html?id=${userid}&name=${username}`;
-                    }, 500);
+                    location.href = `./on.html?id=${userid}&name=${username}`;
                 });
             }
         }

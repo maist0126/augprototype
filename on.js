@@ -68,9 +68,7 @@ mic_on.addEventListener('click',function(e){
     firebase.database().ref('/start_status').set({
         status: 0
     });
-    setTimeout(() => {
-        location.href = `./user.html?id=${userid}&name=${username}`;
-    }, 500);
+    location.href = `./user.html?id=${userid}&name=${username}`;
 });
 
 mic_off.addEventListener('click',function(e){
