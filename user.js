@@ -116,12 +116,12 @@ firebase.database().ref().child('now').once('value').then(function(snapshot) {
         if (empty == 0){
             if (next_id == userid){
                 firebase.database().ref().child('order').once('value').then(function(snapshot){
-                    firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
                     firebase.database().ref().child('now').set({
                         status : 1,
                         id : userid,
                         name : username
                     });
+                    firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
                     location.href = `./on.html?id=${userid}&name=${username}`;
                 });
             }
@@ -139,12 +139,12 @@ firebase.database().ref().child('now').on('value', function(snapshot) {
         if (empty == 0){
             if (next_id == userid){
                 firebase.database().ref().child('order').once('value').then(function(snapshot){
-                    firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
                     firebase.database().ref().child('now').set({
                         status : 1,
                         id : userid,
                         name : username
                     });
+                    firebase.database().ref().child('order/' + Object.keys(snapshot.val())[0]).remove();
                     location.href = `./on.html?id=${userid}&name=${username}`;
                 });
             }
